@@ -5,7 +5,7 @@ h = canvas.height = 200;
 
 const tile = 20
 
-const spawnPoints = [{x: 160, y:159},{ x: 155, y: 50 }, { x: 50, y: 50 }]
+const spawnPoints = [{x: 280, y: 37},{ x: 160, y: 40 }, { x: 50, y: 150 }]
 const colors = ["red", "blue", "green", "yellow"]
 let imgHero, imgGun, imgPackage, imgBullet, imgTiles;
 
@@ -21,9 +21,6 @@ let stats = []
 let packages = []
 let time = 0
 let loggedIn = false;
-const packageSpawnPoints = [{ x: 40, y: 180 }, { x: 340, y: 180 }, { x: 40, y: 240 }, { x: 340, y: 240 }]
-const packageHealth = 20
-const packageSpawnTime = 10
 const playerMaxFrame = 5;
 
 // consts
@@ -32,11 +29,11 @@ const map = [
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 1],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [1, 0, 0, 0, 0, 0, 3, 3, 1, 3, 3, 0, 0, 0, 0, 0, 1],
+  [1, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 1],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-  [1, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 1],
-  [1, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 1],
   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
   [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1]
 ];
@@ -245,9 +242,8 @@ function draw() {
   //info bar
   ctx.font = "14px primaryFont";
   ctx.fillStyle = "#fff";
-  ctx.fillText(`${time}`, 5, 15);
-  ctx.fillText(`HP: 0`, 5, 30);
-  ctx.fillText(`ammo: unlimited`, 5, 45);
+  ctx.fillText(`HP: 0`, 5, 15);
+  ctx.fillText(`ammo: unlimited`, 5, 30);
 
   // functions
   function compareKD(a, b) {
