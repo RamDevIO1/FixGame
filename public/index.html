@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+    <title>Socket.io test</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="login"> 
+        <input id="playerName" type="text" value="player">
+        <select id="color" >
+            <option value="red">red</option>
+            <option value="blue">blue</option>
+            <option value="green">green</option>
+            <option value="yellow">yellow</option>
+        </select>
+        <input type="submit" value="play" onclick="loginPlayer()">
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

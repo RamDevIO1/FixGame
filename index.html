@@ -1,0 +1,38 @@
+<html>
+
+<head>
+  <title>FixGame</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" type="text/css">
+</head>
+
+<body>
+  <div class="container">
+    <canvas id="canvas"></canvas>
+  </div>
+  <div class="panel-controller">
+    <canvas id="controller"></canvas>
+  </div>
+
+  
+  <div id="login">
+    <input id="playerName" type="text" value="player">
+    <select id="color">
+      <option value="red">red</option>
+      <option value="blue">blue</option>
+      <option value="green">green</option>
+      <option value="yellow">yellow</option>
+    </select>
+    <input type="submit" value="play" onclick="loginPlayer()">
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="./firebase.config.js"></script>
+  <script src="./controller.js"></script>
+  <script src="./script.js"></script>
+</body>
+
+</html>

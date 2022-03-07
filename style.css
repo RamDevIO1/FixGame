@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: #339EFF;
+    transition: opacity 1.5s;
+
+}
+
+.container {
+  width: 340px;
+  height: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1em;
+  margin-bottom: 2em;     
+
+}
+
+#canvas {
+  width: 340px;
+  height: 200px;
+  outline: 2px solid #E0F0FF;
+
+}
+
+.panel-controller {
+  width: 334px;
+  height: 90px;
+  display: block;
+
+  margin-left: auto;
+  margin-right: auto;
+      background: #262626;
+
+
+}
+
+.panel-controller #controller {
+  width: 334;
+  height: 90;
+
+    outline: 2px solid #E0F0FF;
+
+}
+
