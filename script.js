@@ -5,6 +5,7 @@ h = canvas.height = 200;
 
 const tile = 20
 
+
 const spawnPoints = [{ x: 280, y: 37 }, { x: 160, y: 40 }, { x: 50, y: 150 }]
 const colors = ["red", "blue", "green", "yellow"]
 let gunType = ["default", "gun1", "gun2"];
