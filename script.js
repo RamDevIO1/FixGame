@@ -90,6 +90,7 @@ function randomFromArray(array) {
 }
 
 loginPlayer()
+
 function loginPlayer() {
   let spawningPoint = spawnPoints[Math.floor(Math.random() * spawnPoints.length)];
 
@@ -451,24 +452,22 @@ function loadImages() {
 }
 let serversnum
 serverRef = firebase.database().ref(`Server-1/server`);
-setInterval(() => {
-  serverRef.on("value", (snapshot) => { 
-  servers = snapshot.val() || {}
-  serversnum = snapshot.numChildren()
-})
 
-serverRef.on("child_added", (snapshot) => {
-  serversnum = snapshot.numChildren()
-})
-},1000)
+  serverRef.on("value", (snapshot) => {
+    servers = snapshot.val() || {}
+    serversnum = snapshot.numChildren()
+  })
 
-if (serversnum > 0) {
-        serverRef.set({ time: servers.time })
-
-} else {
-    serverRef.set({ time: 0 })
+  serverRef.on("child_added", (snapshot) => {
+    serversnum = snapshot.numChildren()
+  })
 
 
+if (serversnum === 1) {
+  serverRef.set({ time: servers.time })
+}
+if (serversnum === 0) {
+  serverRef.set({ time: 0 })
 }
 
 
