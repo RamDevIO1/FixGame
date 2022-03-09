@@ -217,7 +217,7 @@ function draw() {
   ctx.clearRect(0, 0, w, h);
   // ctx.fillStyle = "#757575";
   //ctx.fillStyle = "#80C9C1";
-  ctx.fillStyle = "#3BD7FF";
+  ctx.fillStyle = "#222034";
   ctx.fillRect(0, 0, w, h);
 
   // drawing map
@@ -451,12 +451,16 @@ function loadImages() {
 }
 let serversnum
 serverRef = firebase.database().ref(`Server-1/server`);
-serverRef.on("value", (snapshot) => { 
+setInterval(() => {
+  serverRef.on("value", (snapshot) => { 
   servers = snapshot.val() || {}
   serversnum = snapshot.numChildren()
-  
 })
-  const allPlayerRef = firebase.database().ref(`Server-1/players`);
+
+serverRef.on("child_added", (snapshot) => {
+  serversnum = snapshot.numChildren()
+})
+},1000)
 
 if (serversnum > 0) {
         serverRef.set({ time: servers.time })
