@@ -89,13 +89,13 @@ function randomFromArray(array) {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-
+loginPlayer()
 function loginPlayer() {
   let spawningPoint = spawnPoints[Math.floor(Math.random() * spawnPoints.length)];
 
   firebase.auth().onAuthStateChanged((user) => {
     console.log(user)
-    
+
     if (user) {
       //You're logged in!
       playerUid = user.uid;
@@ -306,11 +306,6 @@ function draw() {
   }
 }
 
-const test = {
-  w: true,
-  a: true,
-  d: true
-}
 console.log(players)
 
 function updatePlayer() {
@@ -454,14 +449,22 @@ function loadImages() {
   imgTiles = new Image();
   imgTiles.src = "./img/tiles.png";
 }
-
+let serversnum
 serverRef = firebase.database().ref(`Server-1/server`);
-serverRef.on("value", (snapshot) => { servers = snapshot.val() || {} })
+serverRef.on("value", (snapshot) => { 
+  servers = snapshot.val() || {}
+  serversnum = snapshot.numChildren()
+  
+})
+  const allPlayerRef = firebase.database().ref(`Server-1/players`);
 
-if(players.length > 1) {
-  serverRef.set({ time: servers.time })
+if (serversnum > 0) {
+        serverRef.set({ time: servers.time })
+
 } else {
-  serverRef.set({ time: 0 })
+    serverRef.set({ time: 0 })
+
+
 }
 
 
@@ -469,6 +472,7 @@ setInterval(() => {
   serverRef.set({
     time: servers.time + 1
   })
+  console.log(serversnum)
 }, 1000);
 
 function update() {
