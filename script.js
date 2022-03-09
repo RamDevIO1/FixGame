@@ -456,8 +456,14 @@ function loadImages() {
 }
 
 serverRef = firebase.database().ref(`Server-1/server`);
-serverRef.set({ time: 0 })
 serverRef.on("value", (snapshot) => { servers = snapshot.val() || {} })
+
+if(players.length > 1) {
+  serverRef.set({ time: servers.time })
+} else {
+  serverRef.set({ time: 0 })
+}
+
 
 setInterval(() => {
   serverRef.set({
