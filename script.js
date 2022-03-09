@@ -12,11 +12,11 @@ let gunType = ["default", "gun1", "gun2"];
 
 let imgHero, imgGun, imgPackage, imgBullet, imgTiles;
 
-let playerUid
-let players = {}
+let playerUid;
+let players = {};
 let playerRef;
 let serverRef;
-let servers;
+let servers = {};
 
 
 
@@ -95,10 +95,10 @@ function loginPlayer() {
 
   firebase.auth().onAuthStateChanged((user) => {
     console.log(user)
+    
     if (user) {
       //You're logged in!
       playerUid = user.uid;
-      serverRef = firebase.database().ref(`Server-1/server`);
       playerRef = firebase.database().ref(`Server-1/players/${playerUid}`);
 
       playerRef.set({
@@ -106,7 +106,7 @@ function loginPlayer() {
         name: createName(),
         color: randomFromArray(playerColors),
         hp: 100,
-        gun: "default",
+        gun: "gun1",
         ammo: -1,
         x: spawningPoint.x,
         y: spawningPoint.y,
@@ -140,7 +140,6 @@ function loginPlayer() {
 function initGame() {
   const allPlayersRef = firebase.database().ref(`Server-1/players`);
 
-  serverRef.set({ time: 0 })
 
   allPlayersRef.on("value", (snapshot) => {
     //Fires whenever a change occurs
@@ -163,12 +162,8 @@ function initGame() {
     const removedKey = snapshot.val().id;
   })
 
-  serverRef.on("value", (snapshot) => {
-    servers = snapshot.val()
-  })
 
 }
-
 
 
 function rectToTile(rect, maps = map) {
@@ -221,8 +216,8 @@ myFont.load().then(function(font) {
 function draw() {
   ctx.clearRect(0, 0, w, h);
   // ctx.fillStyle = "#757575";
-  ctx.fillStyle = "#80C9C1";
-  //ctx.fillStyle = "#3BD7FF";
+  //ctx.fillStyle = "#80C9C1";
+  ctx.fillStyle = "#3BD7FF";
   ctx.fillRect(0, 0, w, h);
 
   // drawing map
@@ -270,8 +265,9 @@ function draw() {
   ctx.font = "14px primaryFont";
   ctx.fillStyle = "#fff";
   ctx.textAlign = "left";
-  ctx.fillText(`HP: {hp}`, 5, 15);
-  ctx.fillText(`ammo: unlimited`, 5, 30);
+  ctx.fillText(`${servers.time}`, 5, 15);
+  ctx.fillText(`HP: {hp}`, 5, 30);
+  ctx.fillText(`ammo: unlimited`, 5, 45);
 
 
   // functions
@@ -316,6 +312,7 @@ const test = {
   d: true
 }
 console.log(players)
+
 function updatePlayer() {
   const player = players[playerUid];
 
@@ -458,12 +455,15 @@ function loadImages() {
   imgTiles.src = "./img/tiles.png";
 }
 
+serverRef = firebase.database().ref(`Server-1/server`);
+serverRef.set({ time: 0 })
+serverRef.on("value", (snapshot) => { servers = snapshot.val() || {} })
+
 setInterval(() => {
   serverRef.set({
     time: servers.time + 1
   })
 }, 1000);
-console.log(servers)
 
 function update() {
   draw();
