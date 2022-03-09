@@ -5,13 +5,17 @@ h = canvas.height = 200;
 
 const tile = 20
 
-const spawnPoints = [{x: 280, y: 37},{ x: 160, y: 40 }, { x: 50, y: 150 }]
+const spawnPoints = [{ x: 280, y: 37 }, { x: 160, y: 40 }, { x: 50, y: 150 }]
 const colors = ["red", "blue", "green", "yellow"]
+let gunType = ["default", "gun1", "gun2"];
+
 let imgHero, imgGun, imgPackage, imgBullet, imgTiles;
 
 let playerUid
 let players = {}
-let playerRef
+let playerRef;
+let serverRef;
+let servers;
 
 
 
@@ -93,12 +97,16 @@ function loginPlayer() {
     if (user) {
       //You're logged in!
       playerUid = user.uid;
+      serverRef = firebase.database().ref(`Server-1/server`);
       playerRef = firebase.database().ref(`Server-1/players/${playerUid}`);
 
       playerRef.set({
         uid: playerUid,
         name: createName(),
         color: randomFromArray(playerColors),
+        hp: 100,
+        gun: "default",
+        ammo: -1,
         x: spawningPoint.x,
         y: spawningPoint.y,
         vx: 0,
@@ -129,9 +137,9 @@ function loginPlayer() {
 }
 
 function initGame() {
-
-
   const allPlayersRef = firebase.database().ref(`Server-1/players`);
+
+  serverRef.set({ time: 0 })
 
   allPlayersRef.on("value", (snapshot) => {
     //Fires whenever a change occurs
@@ -153,17 +161,24 @@ function initGame() {
   allPlayersRef.on("child_removed", (snapshot) => {
     const removedKey = snapshot.val().id;
   })
+
+  serverRef.on("value", (snapshot) => {
+    servers = snapshot.val()
+  })
+
 }
+
+
 
 function rectToTile(rect, maps = map) {
   let left_up = maps[Math.floor(rect.y / tile)][Math.floor(rect.x / tile)],
     right_up = maps[Math.floor(rect.y / tile)][Math.ceil(rect.x / tile)],
     left_down = maps[Math.ceil(rect.y / tile)][Math.floor(rect.x / tile)],
     right_down = maps[Math.ceil(rect.y / tile)][Math.ceil(rect.x / tile)];
-       /*if (((left_up === 3 && right_up === 3) || (left_up === 3 && right_up === 0) || (left_up === 0 && right_up === 3) || (left_up === 0 && right_up === 0)) && 
-           ((left_down === 3 && right_down === 3) || (left_down === 3 && right_down === 0) || (left_down === 0 && right_down === 3) && 
-           ((left_down === 0 && right_down === 0) || (left_up === 0 && right_up === 0))))
-           return false;*/
+  /*if (((left_up === 3 && right_up === 3) || (left_up === 3 && right_up === 0) || (left_up === 0 && right_up === 3) || (left_up === 0 && right_up === 0)) && 
+      ((left_down === 3 && right_down === 3) || (left_down === 3 && right_down === 0) || (left_down === 0 && right_down === 3) && 
+      ((left_down === 0 && right_down === 0) || (left_up === 0 && right_up === 0))))
+      return false;*/
   if (left_up === 1 || right_up === 1 || left_down === 1 || right_down === 1 ||
     left_up === 2 || right_up === 2 || left_down === 2 || right_down === 2 ||
     left_up === 3 || right_up === 3 || left_down === 3 || right_down === 3)
@@ -235,15 +250,28 @@ function draw() {
     else {
       drawFlippedImage(ctx, imgHero, playerd.sprite.turned, playerd.x, playerd.y, playerd.sprite.frame * tile, colors.indexOf(playerd.color) * tile, tile, tile);
     }
+    ctx.font = "10px primaryFont";
+    ctx.fillStyle = "#fff";
+    ctx.textAlign = "center";
+    ctx.fillText(playerd.name, playerd.x + 10, playerd.y - 7);
+    let gunangle
+    if (playerd.sprite.turned === "left") { gunangle = 3.11 }
+    if (playerd.sprite.turned === "right") { gunangle = 0 }
+
+    drawRotatedImage(ctx, imgGun, gunangle, playerd.x + 10, playerd.y + 5, gunType.indexOf(playerd.gun) * tile, 0, tile, 15);
+
 
   });
 
+  let isFaded = false;
 
   //info bar
   ctx.font = "14px primaryFont";
   ctx.fillStyle = "#fff";
-  ctx.fillText(`HP: 0`, 5, 15);
+  ctx.textAlign = "left";
+  ctx.fillText(`HP: {hp}`, 5, 15);
   ctx.fillText(`ammo: unlimited`, 5, 30);
+
 
   // functions
   function compareKD(a, b) {
@@ -286,14 +314,14 @@ const test = {
   a: true,
   d: true
 }
-
+console.log(players)
 function updatePlayer() {
   const player = players[playerUid];
 
   // let player = players.filter(p => p.id === player.id)[0];
-/*
-  if (player.down === undefined)
-    player.down = [];*/
+  /*
+    if (player.down === undefined)
+      player.down = [];*/
 
   if (player !== undefined) {
 
@@ -327,7 +355,7 @@ function updatePlayer() {
     }
 
     player.ground = false;
-    if (rectToTile({ x: player.x, y: player.y + 1}, map))
+    if (rectToTile({ x: player.x, y: player.y + 1 }, map))
       player.ground = true;
     if (!player.ground) {
       player.vy += 0.8;
@@ -413,15 +441,6 @@ function updatePlayer() {
 
 setInterval(() => {
   updatePlayer();
-
-  /*
-      let data = {
-          players: players.filter(player => player.respawnAt === undefined),
-          bullets: bullets,
-          packages: packages,
-          stats: stats
-      }*/
-
 }, 30);
 
 
@@ -439,8 +458,11 @@ function loadImages() {
 }
 
 setInterval(() => {
-  time++;
+  serverRef.set({
+    time: servers.time + 1
+  })
 }, 1000);
+console.log(servers)
 
 function update() {
   draw();
